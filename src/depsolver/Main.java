@@ -107,8 +107,8 @@ public class Main {
       }
     }
     
-    Set<Set<Package>> sortedSet = processSets(makePowerSet(repository), repository);
-    
+    Set<Set<Package>> sortedSet = processSets_Dependencies(makePowerSet(repository), repository);
+    sortedSet = processSets_Conflicts(sortedSet, repository);
     for(Set<Package> r : sortedSet)
 	  {
 		  System.out.printf("[");
@@ -127,24 +127,7 @@ public class Main {
     br.lines().forEach(line -> sb.append(line));
     return sb.toString();
   }
-  
-  private static void testSets(List<Package> repository)
-  {
-	  Set<Package> testSet = Sets.newHashSet(repository);
-	  Set<Set<Package>> result = Sets.powerSet(testSet);
-	  
-	  for(Set<Package> r : result)
-	  {
-		  System.out.printf("[");
-		  for(Package p : r)
-		  {
-			  System.out.printf("%s=%s, ", p.getName(), p.getVersion());
-		  }
-		  
-		  System.out.printf("]\n");
-	  }
-  }
-  
+   
   static Set<Set<Package>> makePowerSet(List<Package> repository)
   {
 	  Set<Package> listToSet = Sets.newHashSet(repository);
@@ -152,7 +135,7 @@ public class Main {
 	  return powerSet;
   }
    
-  static Set<Set<Package>> processSets(Set<Set<Package>> powerSet, List<Package> repository)
+  static Set<Set<Package>> processSets_Dependencies(Set<Set<Package>> powerSet, List<Package> repository)
   {
 	  Set<Set<Package>> sortedSet = new HashSet<>();
 	  for(Set<Package> subSet : powerSet)
@@ -161,7 +144,7 @@ public class Main {
 		  
 		  for(Package p : subSet)
 		  {
-			if(isSetValid(subSet, p, repository))
+			if(isSetValid_Dependencies(subSet, p, repository))
 			{
 				satisfied.add(true);
 			}
@@ -179,7 +162,33 @@ public class Main {
 	  return sortedSet;
   }
   
-  static boolean isSetValid(Set<Package> subSet, Package p, List<Package> repository)
+  static Set<Set<Package>> processSets_Conflicts(Set<Set<Package>> powerSet, List<Package> repository)
+  {
+	  Set<Set<Package>> sortedSet = new HashSet<>();
+	  for(Set<Package> subSet : powerSet)
+	  {
+		  List<Boolean> satisfied = new ArrayList<>();
+		  
+		  for(Package p : subSet)
+		  {
+			  if(isSetValid_Conflicts(subSet, p, repository))
+			  {
+				  satisfied.add(true);
+			  }
+			  else
+			  {
+				  satisfied.add(false);
+			  }
+		  }
+		  if(!(satisfied.contains(false)))
+		  {
+			  sortedSet.add(subSet);
+		  }
+	  }
+	  return sortedSet;
+  }
+  
+  static boolean isSetValid_Dependencies(Set<Package> subSet, Package p, List<Package> repository)
   {
 	  List<Boolean> satisfied = new ArrayList<>();
 	  
@@ -209,6 +218,40 @@ public class Main {
 	  {
 		  return false;
 	  }
+	  return true;
+  }
+  
+  static boolean isSetValid_Conflicts(Set<Package> subSet, Package p, List<Package> repository)
+  {
+	  List<Boolean> satisfied = new ArrayList<>();
+	  
+	  for(String conflict : p.getConflicts())
+	  {
+		  List<Package> confAsPack = conflictToPackage(conflict, repository);
+		  boolean subSat = true;
+		  
+		  for(Package cp : confAsPack)
+		  {
+			  if(subSet.contains(cp))
+			  {
+				  subSat = false;
+			  }
+		  }
+		  if(subSat == true)
+		  {
+			  satisfied.add(true);
+		  }
+		  else
+		  {
+			  satisfied.add(false);
+		  }
+	  }
+	  
+	  if(satisfied.contains(false))
+	  {
+		  return false;
+	  }
+	  
 	  return true;
   }
   
@@ -309,5 +352,105 @@ public class Main {
 		}
 	  }
 	  return depsAsPackages;
+  }
+  
+  static List<Package> conflictToPackage(String conflict, List<Package> repository)
+  {
+	  List<Package> confsAsPackages = new ArrayList<>();
+	  
+	  if(conflict.contains("<="))
+	  {
+		  String[] nameVersion = conflict.split("<=");
+		  String name = nameVersion[0];
+		  int version = Integer.parseInt(nameVersion[1].replace(".", ""));
+		  
+		  for(Package p : repository)
+		  {
+			  int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
+			  
+			  if(p.getName().equals(name) && pVersion <= version)
+			  {
+				  confsAsPackages.add(p);
+			  }
+		  }
+	  }
+	  else if(conflict.contains(">="))
+	  {
+		  String[] nameVersion = conflict.split(">=");
+		  String name = nameVersion[0];
+		  int version = Integer.parseInt(nameVersion[1].replace(".", ""));
+		  
+		  for(Package p : repository)
+		  {
+			  int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
+			  
+			  if(p.getName().equals(name) && pVersion >= version)
+			  {
+				  confsAsPackages.add(p);
+			  }
+		  }
+	  }
+	  else if(conflict.contains("<"))
+	  {
+		  String[] nameVersion = conflict.split("<");
+		  String name = nameVersion[0];
+		  int version = Integer.parseInt(nameVersion[1].replace(".", ""));
+		  
+		  for(Package p : repository)
+		  {
+			  int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
+			  
+			  if(p.getName().equals(name) && pVersion < version)
+			  {
+				  confsAsPackages.add(p);
+			  }
+		  }
+	  }
+	  else if(conflict.contains(">"))
+	  {
+		  String[] nameVersion = conflict.split(">");
+		  String name = nameVersion[0];
+		  int version = Integer.parseInt(nameVersion[1].replace(".", ""));
+		  
+		  for(Package p : repository)
+		  {
+			  int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
+			  
+			  if(p.getName().equals(name) && pVersion > version)
+			  {
+				  confsAsPackages.add(p);
+			  }
+		  }
+	  }
+	  else if(conflict.contains("="))
+	  {
+		  String[] nameVersion = conflict.split("=");
+		  String name = nameVersion[0];
+		  int version = Integer.parseInt(nameVersion[1].replace(".", ""));
+		  
+		  for(Package p : repository)
+		  {
+			  int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
+			  
+			  if(p.getName().equals(name) && pVersion == version)
+			  {
+				  confsAsPackages.add(p);
+			  }
+		  }
+	  }
+	  else
+	  {
+		  String name = conflict;
+			
+			for(Package p : repository)
+			{
+				if(p.getName().equals(name))
+				{
+					confsAsPackages.add(p);
+				}
+			}
+	  }
+	  
+	  return confsAsPackages;
   }
 }
