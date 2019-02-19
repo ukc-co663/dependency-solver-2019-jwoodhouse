@@ -107,8 +107,18 @@ public class Main {
       }
     }
     
-    Set<Set<Package>> sortedSet = processSets_Dependencies(makePowerSet(repository), repository);
-    sortedSet = processSets_Conflicts(sortedSet, repository);
+    if(repository.size() > 30)
+    {
+    	List<List<Package>> largeRepoSet = makeSetLarge(repository);
+    	
+    	for(Set<Package> smallSet : largeRepoSet)
+    	{
+    		Set<Set<Package>> sortedSet = processSets(makePowerSet(smallSet);
+    		
+    	}
+    }
+    
+    Set<Set<Package>> sortedSet = processSets(makePowerSet(repository), repository);
     for(Set<Package> r : sortedSet)
 	  {
 		  System.out.printf("[");
@@ -134,43 +144,51 @@ public class Main {
 	  Set<Set<Package>> powerSet = Sets.powerSet(listToSet);
 	  return powerSet;
   }
-   
-  static Set<Set<Package>> processSets_Dependencies(Set<Set<Package>> powerSet, List<Package> repository)
+  
+  static List<List<Package>> makeSetLarge(List<Package> repository)
   {
-	  Set<Set<Package>> sortedSet = new HashSet<>();
-	  for(Set<Package> subSet : powerSet)
-	  {
-		  List<Boolean> satisfied = new ArrayList<>();
-		  
-		  for(Package p : subSet)
-		  {
-			if(isSetValid_Dependencies(subSet, p, repository))
-			{
-				satisfied.add(true);
-			}
-			else
-			{
-				satisfied.add(false);
-			}
-		  }
-		  if(!(satisfied.contains(false)))
-		  {
-			  sortedSet.add(subSet);
-		  }
-	  }
-	  
-	  return sortedSet;
+	  List<List<Package>> setOfLargeRepo = new ArrayList<>();
+	  List<Package> smallSet = new ArrayList<>();
+	 for(int i = 0; i < repository.size(); i++)
+	 {
+		 if(i == 0)
+		 {
+			 smallSet = new ArrayList<>();
+			 smallSet.add(repository.get(i));
+		 }
+		 else if(i % 30 == 0)
+		 {
+			 smallSet.add(repository.get(i));
+			 setOfLargeRepo.add(smallSet);
+			 smallSet = new ArrayList<>();
+		 }
+		 else
+		 {
+			 smallSet.add(repository.get(i));
+		 }
+	 }
+	 return setOfLargeRepo;
   }
   
-  static Set<Set<Package>> processSets_Conflicts(Set<Set<Package>> powerSet, List<Package> repository)
+  static Set<Set<Package>> processSets(Set<Set<Package>> powerSet, List<Package> repository)
   {
-	  Set<Set<Package>> sortedSet = new HashSet<>();
+	  Set<Set<Package>> validSet = new HashSet<>();
+	  
 	  for(Set<Package> subSet : powerSet)
 	  {
 		  List<Boolean> satisfied = new ArrayList<>();
 		  
 		  for(Package p : subSet)
 		  {
+			  if(isSetValid_Dependencies(subSet, p, repository))
+			  {
+				  satisfied.add(true);
+			  }
+			  else
+			  {
+				  satisfied.add(false);
+			  }
+			  
 			  if(isSetValid_Conflicts(subSet, p, repository))
 			  {
 				  satisfied.add(true);
@@ -180,12 +198,14 @@ public class Main {
 				  satisfied.add(false);
 			  }
 		  }
+		  
 		  if(!(satisfied.contains(false)))
 		  {
-			  sortedSet.add(subSet);
+			  validSet.add(subSet);
 		  }
 	  }
-	  return sortedSet;
+	  
+	  return validSet;
   }
   
   static boolean isSetValid_Dependencies(Set<Package> subSet, Package p, List<Package> repository)
