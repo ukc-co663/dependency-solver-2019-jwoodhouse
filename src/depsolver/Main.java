@@ -5,7 +5,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Set;
 
 import com.alibaba.fastjson.JSON;
@@ -85,50 +87,32 @@ public class Main {
 
     // CHANGE CODE BELOW:
     // using repo, initial and constraints, compute a solution and print the answer
-    for (Package repoPackage : repository) 
-    {
-      System.out.printf("package %s version %s\n", repoPackage.getName(), repoPackage.getVersion());
-      
-      for (List<String> depClause : repoPackage.getDepends()) 
-      {
-        System.out.printf("  dependency:");
-        
-        for (String dependency : depClause) 
-        {
-          System.out.printf(" %s", dependency);
-        }
-        
-        System.out.printf("\n");
-      }
-      
-      for (String confClause : repoPackage.getConflicts())
-      {
-    	  System.out.printf("  conflict: %s\n", confClause);
-      }
-    }
-    
-    if(repository.size() > 30)
-    {
-    	List<List<Package>> largeRepoSet = makeSetLarge(repository);
-    	
-    	for(Set<Package> smallSet : largeRepoSet)
-    	{
-    		Set<Set<Package>> sortedSet = processSets(makePowerSet(smallSet);
-    		
+
+    for (Package repoPackage : repository) {
+    	System.out.printf("package %s version %s\n", repoPackage.getName(), repoPackage.getVersion());
+
+    	for (List<String> depClause : repoPackage.getDepends()) {
+    		System.out.printf("  dependency:");
+
+    		for (String dependency : depClause) {
+    			System.out.printf(" %s", dependency);
+    		}
+
+    		System.out.printf("\n");
     	}
-    }
+
+    	for (String confClause : repoPackage.getConflicts()) {
+    		System.out.printf("  conflict: %s\n", confClause);
+    	}
+    } 
     
-    Set<Set<Package>> sortedSet = processSets(makePowerSet(repository), repository);
-    for(Set<Package> r : sortedSet)
-	  {
-		  System.out.printf("[");
-		  for(Package p : r)
-		  {
-			  System.out.printf("%s=%s, ", p.getName(), p.getVersion());
-		  }
-		  
-		  System.out.printf("]\n");
-	  }
+    List<Package> packagesToInst = getPackageFromConstraints(constraints, repository);
+    Set<Package> relevantPackages = Sets.newHashSet(getValidRepository(packagesToInst, repository));
+    
+    for(Package p : relevantPackages)
+    {
+    	System.out.printf("package %s version %s\n", p.getName(), p.getVersion());
+    }
   }
 
   static String readFile(String filename) throws IOException {
@@ -137,340 +121,206 @@ public class Main {
     br.lines().forEach(line -> sb.append(line));
     return sb.toString();
   }
-   
-  static Set<Set<Package>> makePowerSet(List<Package> repository)
+
+  static List<Package> getPackageFromConstraints(List<String> constraints, List<Package> repository)
   {
-	  Set<Package> listToSet = Sets.newHashSet(repository);
-	  Set<Set<Package>> powerSet = Sets.powerSet(listToSet);
-	  return powerSet;
-  }
-  
-  static List<List<Package>> makeSetLarge(List<Package> repository)
-  {
-	  List<List<Package>> setOfLargeRepo = new ArrayList<>();
-	  List<Package> smallSet = new ArrayList<>();
-	 for(int i = 0; i < repository.size(); i++)
-	 {
-		 if(i == 0)
-		 {
-			 smallSet = new ArrayList<>();
-			 smallSet.add(repository.get(i));
-		 }
-		 else if(i % 30 == 0)
-		 {
-			 smallSet.add(repository.get(i));
-			 setOfLargeRepo.add(smallSet);
-			 smallSet = new ArrayList<>();
-		 }
-		 else
-		 {
-			 smallSet.add(repository.get(i));
-		 }
-	 }
-	 return setOfLargeRepo;
-  }
-  
-  static Set<Set<Package>> processSets(Set<Set<Package>> powerSet, List<Package> repository)
-  {
-	  Set<Set<Package>> validSet = new HashSet<>();
+	  List<Package> parsedConstraints = new ArrayList<>();
 	  
-	  for(Set<Package> subSet : powerSet)
+	  for(String constraint : constraints)
 	  {
-		  List<Boolean> satisfied = new ArrayList<>();
-		  
-		  for(Package p : subSet)
+		  if(constraint.contains("="))
 		  {
-			  if(isSetValid_Dependencies(subSet, p, repository))
+			  String[] nameVersion = constraint.split("=");
+			  String constraintName = nameVersion[0].substring(1);
+			  String version = nameVersion[1];
+
+			  for(Package p : repository)
 			  {
-				  satisfied.add(true);
+				  if(p.getName().equals(constraintName) && p.getVersion().equals(version))
+				  {
+					  parsedConstraints.add(p);
+				  }
 			  }
-			  else
-			  {
-				  satisfied.add(false);
-			  }
-			  
-			  if(isSetValid_Conflicts(subSet, p, repository))
-			  {
-				  satisfied.add(true);
-			  }
-			  else
-			  {
-				  satisfied.add(false);
-			  }
-		  }
-		  
-		  if(!(satisfied.contains(false)))
-		  {
-			  validSet.add(subSet);
-		  }
-	  }
-	  
-	  return validSet;
-  }
-  
-  static boolean isSetValid_Dependencies(Set<Package> subSet, Package p, List<Package> repository)
-  {
-	  List<Boolean> satisfied = new ArrayList<>();
-	  
-	  for(List<String> dependency : p.getDepends())
-	  {
-		  List<Package> depAsPack = dependencyToPackage(dependency, repository);
-		  boolean subsat = false;
-		  
-		  for(Package dp :  depAsPack)
-		  {
-			  if (subSet.contains(dp))
-			  {
-				  subsat = true;
-			  }
-		  }
-		  if(subsat == true)
-		  {
-			  satisfied.add(true);
 		  }
 		  else
 		  {
-			  satisfied.add(false);
-		  }
-	  }
-	  
-	  if(satisfied.contains(false))
-	  {
-		  return false;
-	  }
-	  return true;
-  }
-  
-  static boolean isSetValid_Conflicts(Set<Package> subSet, Package p, List<Package> repository)
-  {
-	  List<Boolean> satisfied = new ArrayList<>();
-	  
-	  for(String conflict : p.getConflicts())
-	  {
-		  List<Package> confAsPack = conflictToPackage(conflict, repository);
-		  boolean subSat = true;
-		  
-		  for(Package cp : confAsPack)
-		  {
-			  if(subSet.contains(cp))
+			  String latestVersion = "0";
+			  String constraintName = constraint.substring(1);
+			  if(constraint.charAt(0) == '+')
 			  {
-				  subSat = false;
+				  for(Package p : repository)
+				  {
+					  if(p.getName().equals(constraintName) && compareVersions(p.getVersion(), latestVersion) > 0)
+					  {
+						  latestVersion = p.getVersion();
+					  }
+				  }
+				  for(Package p : repository)
+				  {
+					  if(p.getName().equals(constraintName) && p.getVersion().equals(latestVersion))
+					  {
+						  parsedConstraints.add(p);
+					  }
+				  }
 			  }
 		  }
-		  if(subSat == true)
-		  {
-			  satisfied.add(true);
-		  }
-		  else
-		  {
-			  satisfied.add(false);
-		  }
 	  }
-	  
-	  if(satisfied.contains(false))
-	  {
-		  return false;
-	  }
-	  
-	  return true;
+	  return parsedConstraints;
   }
-  
-  static List<Package> dependencyToPackage(List<String> dependency, List<Package> repository)
-  {
 
-	  List<Package> depsAsPackages = new ArrayList<>();
+  static int compareVersions(String versionA, String versionB)
+  {
+	  return versionA.compareTo(versionB);
+  }
 
+  static List<Package> getValidRepository(List<Package> parsedConstraints, List<Package> repository)
+  {
+	  List<Package> relevantPackages = new ArrayList<>();
+	  List<Package> dependencyPackages = new ArrayList<>();
+	  List<Package> conflictPackages = new ArrayList<>();
 	  
-	  for(String dep : dependency)
+	  Queue<Package> evaluationQueue = new LinkedList<>();
+	  
+	  for(Package p : parsedConstraints)
 	  {
-		if(dep.contains("<="))
-		{
-			String[] nameVersion = dep.split("<=");
-			String name = nameVersion[0];
-			int version = Integer.parseInt(nameVersion[1].replace(".", ""));
-			
-			for(Package p : repository)
-			{
-				int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
-				if(p.getName().equals(name) && pVersion <= version)
-				{
-					depsAsPackages.add(p);
-				}
-			}
-		}
-		else if(dep.contains(">="))
-		{
-			String[] nameVersion = dep.split(">=");
-			String name = nameVersion[0];
-			int version = Integer.parseInt(nameVersion[1].replace(".", ""));
-			
-			for(Package p : repository)
-			{
-				int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
-				if(p.getName().equals(name) && pVersion >= version)
-				{
-					depsAsPackages.add(p);
-				}
-			}
-		}
-		else if(dep.contains("<"))
-		{
-			String[] nameVersion = dep.split("<");
-			String name = nameVersion[0];
-			int version = Integer.parseInt(nameVersion[1].replace(".", ""));
-			
-			for(Package p : repository)
-			{
-				int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
-				if(p.getName().equals(name) && pVersion < version)
-				{
-					depsAsPackages.add(p);
-				}
-			}
-		}
-		else if(dep.contains(">"))
-		{
-			String[] nameVersion = dep.split(">");
-			String name = nameVersion[0];
-			int version = Integer.parseInt(nameVersion[1].replace(".", ""));
-			
-			for(Package p : repository)
-			{
-				int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
-				if(p.getName().equals(name) && pVersion > version)
-				{
-					depsAsPackages.add(p);
-				}
-			}
-		}
-		else if(dep.contains("="))
-		{
-			String[] nameVersion = dep.split("=");
-			String name = nameVersion[0];
-			int version = Integer.parseInt(nameVersion[1].replace(".", ""));
-			
-			for(Package p : repository)
-			{
-				int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
-				if(p.getName().equals(name) && pVersion == version)
-				{
-					depsAsPackages.add(p);
-				}
-			}
-		}
-		else
-		{
-			String name = dep;
-			
-			for(Package p : repository)
-			{
-				if(p.getName().equals(name))
-				{
-					depsAsPackages.add(p);
-				}
-			}
-		}
+		  evaluationQueue.add(p);
 	  }
-	  return depsAsPackages;
+	  
+	  while(!evaluationQueue.isEmpty())
+	  {
+		  Package p = evaluationQueue.remove();
+		  dependencyPackages.add(p);
+		  //System.out.printf("name: %s version %s\n", p.getName(), p.getVersion());
+		  
+		  for(List<String> dependencies : p.getDepends())
+		  {
+			  for(String dependency : dependencies)
+			  {
+				  for(Package pp : getPackageTest(dependency, repository))
+				  {
+					  if(!dependencyPackages.contains(pp))
+					  {
+						  evaluationQueue.add(pp);
+					  }
+				  }
+			  }
+		  }
+	  }
+	  
+	  for(Package p : dependencyPackages)
+	  {
+		  evaluationQueue.add(p);
+	  }
+	  
+	  while(!evaluationQueue.isEmpty())
+	  {
+		  Package p = evaluationQueue.remove();
+		  
+		  for(String conflict : p.getConflicts())
+		  {
+			  for(Package pp : getPackageTest(conflict, repository))
+			  {
+				  conflictPackages.add(pp);
+			  }
+		  }
+		  
+	  }
+	  
+	  Set<Package> printTest = Sets.newHashSet(conflictPackages);
+	  
+	  for(Package p : printTest)
+	  {
+		  System.out.printf("CONF: package %s version %s\n", p.getName(), p.getVersion());
+	  }
+	  
+	  return dependencyPackages;
   }
   
-  static List<Package> conflictToPackage(String conflict, List<Package> repository)
+  static List<Package> getPackageTest(String packageString, List<Package> repository)
   {
-	  List<Package> confsAsPackages = new ArrayList<>();
-	  
-	  if(conflict.contains("<="))
+	  List<Package> packages = new ArrayList<>();
+
+	  if(packageString.contains("<="))
 	  {
-		  String[] nameVersion = conflict.split("<=");
+		  String[] nameVersion = packageString.split("<=");
 		  String name = nameVersion[0];
-		  int version = Integer.parseInt(nameVersion[1].replace(".", ""));
-		  
+		  String version = nameVersion[1];
+
 		  for(Package p : repository)
 		  {
-			  int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
-			  
-			  if(p.getName().equals(name) && pVersion <= version)
+			  if(p.getName().equals(name) && compareVersions(p.getVersion(), version) <= 0)
 			  {
-				  confsAsPackages.add(p);
+				  packages.add(p);
 			  }
 		  }
 	  }
-	  else if(conflict.contains(">="))
+	  else if(packageString.contains(">="))
 	  {
-		  String[] nameVersion = conflict.split(">=");
+		  String[] nameVersion = packageString.split(">=");
 		  String name = nameVersion[0];
-		  int version = Integer.parseInt(nameVersion[1].replace(".", ""));
-		  
+		  String version = nameVersion[1];
+
 		  for(Package p : repository)
 		  {
-			  int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
-			  
-			  if(p.getName().equals(name) && pVersion >= version)
+			  if(p.getName().equals(name) && compareVersions(p.getVersion(), version) >= 0)
 			  {
-				  confsAsPackages.add(p);
+				  packages.add(p);
 			  }
 		  }
 	  }
-	  else if(conflict.contains("<"))
+	  else if(packageString.contains("<"))
 	  {
-		  String[] nameVersion = conflict.split("<");
+		  String[] nameVersion = packageString.split("<");
 		  String name = nameVersion[0];
-		  int version = Integer.parseInt(nameVersion[1].replace(".", ""));
-		  
+		  String version = nameVersion[1];
+
 		  for(Package p : repository)
 		  {
-			  int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
-			  
-			  if(p.getName().equals(name) && pVersion < version)
+			  if(p.getName().equals(name) && compareVersions(p.getVersion(), version) < 0)
 			  {
-				  confsAsPackages.add(p);
+				  packages.add(p);
 			  }
 		  }
 	  }
-	  else if(conflict.contains(">"))
+	  else if(packageString.contains(">"))
 	  {
-		  String[] nameVersion = conflict.split(">");
+		  String[] nameVersion = packageString.split(">");
 		  String name = nameVersion[0];
-		  int version = Integer.parseInt(nameVersion[1].replace(".", ""));
-		  
+		  String version = nameVersion[1];
+
 		  for(Package p : repository)
 		  {
-			  int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
-			  
-			  if(p.getName().equals(name) && pVersion > version)
+			  if(p.getName().equals(name) && compareVersions(p.getVersion(), version) > 0)
 			  {
-				  confsAsPackages.add(p);
+				  packages.add(p);
 			  }
 		  }
 	  }
-	  else if(conflict.contains("="))
+	  else if(packageString.contains("="))
 	  {
-		  String[] nameVersion = conflict.split("=");
+		  String[] nameVersion = packageString.split("=");
 		  String name = nameVersion[0];
-		  int version = Integer.parseInt(nameVersion[1].replace(".", ""));
-		  
+		  String version = nameVersion[1];
+
 		  for(Package p : repository)
 		  {
-			  int pVersion = Integer.parseInt(p.getVersion().replace(".", ""));
-			  
-			  if(p.getName().equals(name) && pVersion == version)
+			  if(p.getName().equals(name) && compareVersions(p.getVersion(), version) == 0)
 			  {
-				  confsAsPackages.add(p);
+				  packages.add(p);
 			  }
 		  }
 	  }
 	  else
-	  {
-		  String name = conflict;
-			
-			for(Package p : repository)
-			{
-				if(p.getName().equals(name))
-				{
-					confsAsPackages.add(p);
-				}
-			}
+	  {				
+		  for(Package p : repository)
+		  {
+			  if(p.getName().equals(packageString))
+			  {
+				  packages.add(p);
+			  }
+		  }
 	  }
-	  
-	  return confsAsPackages;
+
+	  return packages;
   }
 }
