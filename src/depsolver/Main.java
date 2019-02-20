@@ -124,6 +124,18 @@ public class Main {
 
   static List<Package> getPackageFromConstraints(List<String> constraints, List<Package> repository)
   {
+	  //probably be lazy here and just import every version of the package if there is no version
+	  //cause of uninstall weight.
+	  
+	  //also need to handle uninstalls at some stage. not sure how :(
+	  /**
+	   * FOR EACH CONSTRAINT
+	   * 	GET NAME
+	   * 	FOR EACH PACKAGE IN REPO
+	   * 		ADD TO PARSEDCONSTRAINTS AS PACKAGE
+	   * 	END
+	   * END
+	   */
 	  List<Package> parsedConstraints = new ArrayList<>();
 	  
 	  for(String constraint : constraints)
@@ -144,6 +156,7 @@ public class Main {
 		  }
 		  else
 		  {
+			  //dont need this?
 			  String latestVersion = "0";
 			  String constraintName = constraint.substring(1);
 			  if(constraint.charAt(0) == '+')
@@ -170,6 +183,10 @@ public class Main {
 
   static int compareVersions(String versionA, String versionB)
   {
+	  //this definitely works for lexicographical versions.
+	  //Positive return = A > B
+	  //Negative return = B < A
+	  //0 return = A == B
 	  return versionA.compareTo(versionB);
   }
 
@@ -179,6 +196,7 @@ public class Main {
 	  List<Package> dependencyPackages = new ArrayList<>();
 	  List<Package> conflictPackages = new ArrayList<>();
 	  
+	  //Using a queue + iteration to avoid using recursion.
 	  Queue<Package> evaluationQueue = new LinkedList<>();
 	  
 	  for(Package p : parsedConstraints)
@@ -186,6 +204,8 @@ public class Main {
 		  evaluationQueue.add(p);
 	  }
 	  
+	  //can traverse all dependencies from top to bottom by queueing and dequeueing
+	  //until queue is empty
 	  while(!evaluationQueue.isEmpty())
 	  {
 		  Package p = evaluationQueue.remove();
@@ -207,11 +227,13 @@ public class Main {
 		  }
 	  }
 	  
+	  //opposite of dependencies, we only dequeue as we know all the packages we care about.
 	  for(Package p : dependencyPackages)
 	  {
 		  evaluationQueue.add(p);
 	  }
 	  
+	  //we only get conflicts for packages in the generated dependency list.
 	  while(!evaluationQueue.isEmpty())
 	  {
 		  Package p = evaluationQueue.remove();
@@ -226,6 +248,7 @@ public class Main {
 		  
 	  }
 	  
+	  //easy way to clear duplicates from a List.
 	  Set<Package> printTest = Sets.newHashSet(conflictPackages);
 	  
 	  for(Package p : printTest)
@@ -233,9 +256,11 @@ public class Main {
 		  System.out.printf("CONF: package %s version %s\n", p.getName(), p.getVersion());
 	  }
 	  
+	  //return needs to be changed to relevantPackages.
 	  return dependencyPackages;
   }
   
+  //converts a string name of package to a list of packages matched against it.
   static List<Package> getPackageTest(String packageString, List<Package> repository)
   {
 	  List<Package> packages = new ArrayList<>();
@@ -323,4 +348,6 @@ public class Main {
 
 	  return packages;
   }
+  
+  //need a pog method to determine safety of a removal.
 }
