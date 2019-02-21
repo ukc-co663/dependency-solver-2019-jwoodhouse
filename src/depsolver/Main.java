@@ -189,8 +189,31 @@ public class Main {
 	  //0 return = A == B
 	  return versionA.compareTo(versionB);
   }
+  
+  static boolean removeConflictCheckSafe(Set<Package> dependencyPackages, Package conflictPackage, List<Package> repository)
+  {
+	  boolean isSafeToRemove = true;
+	  for(Package p : dependencyPackages)
+	  {
+		  for (List<String> sp : p.getDepends())
+		  {
+			  if(sp.size() == 1)
+			  {
+				  List<Package> pkgToCheck = getPackageTest(sp.get(0), repository);
+				  for(Package pp : pkgToCheck)
+				  {
+					  if(pp == conflictPackage)
+					  {
+						  isSafeToRemove = false;
+					  }
+				  }
+			  }
+		  }  
+	  }
+	  return isSafeToRemove;
+  }
 
-  static List<Package> getValidRepository(List<Package> parsedConstraints, List<Package> repository)
+  static Set<Package> getValidRepository(List<Package> parsedConstraints, List<Package> repository)
   {
 	  List<Package> relevantPackages = new ArrayList<>();
 	  List<Package> dependencyPackages = new ArrayList<>();
@@ -249,15 +272,24 @@ public class Main {
 	  }
 	  
 	  //easy way to clear duplicates from a List.
-	  Set<Package> printTest = Sets.newHashSet(conflictPackages);
+	  Set<Package> conflictPackagesSet = Sets.newHashSet(conflictPackages);
+	  Set<Package> dependencyPackagesSet = Sets.newHashSet(dependencyPackages);
 	  
-	  for(Package p : printTest)
+	  for(Package c : conflictPackagesSet)
+	  {
+		  if(removeConflictCheckSafe(dependencyPackagesSet, c, repository))
+		  {
+			  dependencyPackagesSet.remove(c);
+		  }
+	  }
+	  
+	  for(Package p : conflictPackagesSet)
 	  {
 		  System.out.printf("CONF: package %s version %s\n", p.getName(), p.getVersion());
 	  }
 	  
 	  //return needs to be changed to relevantPackages.
-	  return dependencyPackages;
+	  return dependencyPackagesSet;
   }
   
   //converts a string name of package to a list of packages matched against it.
