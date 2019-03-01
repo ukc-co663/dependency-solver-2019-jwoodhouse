@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -21,6 +22,7 @@ import org.logicng.solvers.SATSolver;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
 
@@ -203,14 +205,10 @@ public class Main {
 	final PropositionalParser p = new PropositionalParser(f);
 	Formula formula = null;
 	
-	List<String> listOfExpressions = new ArrayList<>();
-	
-	
-	
-	
+	String booleanExp = repositoryToBooleanExp2(improvedRepository, positiveConstraints, negativeConstraints);
 	
 	try {
-		formula = p.parse("(X11 & ((X21) | (X31) | (X41 & (X11 | X31 | (X51)))) & ((X21) | (X40 & ~X41) | (X50 & ~X51)) & ((X30 & ~X31) | (X40 & ~X41) | (X50 & ~X51)) & ((X20 & ~X21) | (X40 & ~X41) | (X50 & ~X51))) & X11 & X20 & X30 & X41 & X50");
+		formula = p.parse("A1 & ((B1 & C1 & ~D435 & ~D436 & ~D429) | (C1 & ~(D429 & ~B1)))");
 	} catch (ParserException e) {
 		e.printStackTrace();
 	}
@@ -218,21 +216,30 @@ public class Main {
 	final SATSolver miniSat = MiniSat.miniSat(f);
 	miniSat.add(formula);
 	//final Tristate result = miniSat.sat();
-	List<Assignment> pog = miniSat.enumerateAllModels();
+	List<Assignment> allValidStates = miniSat.enumerateAllModels();
 	
-	List<List<PackageImproved>> pogu = getPackagesFromModel(pog, improvedRepository);
+	for(Assignment a : allValidStates)
+	{
+		System.out.println(a.toString());
+	}
+	
+	List<List<PackageImproved>> allValidStatesAsPackages = getPackagesFromModel(allValidStates, improvedRepository);
 
-	//for(List<PackageImproved> lp : pogu)
-	//{
-	//	System.out.print("SET: ");
-	//	for(PackageImproved pp : lp)
-	//	{
-	//		System.out.printf("[package %s version %s] ", pp.getName(), pp.getVersion());
-	//	}
-	//	System.out.print("\n");
-	//}
+	for(List<PackageImproved> validState : allValidStatesAsPackages)
+	{
+		System.out.print("SET: ");
+		for(PackageImproved pp : validState)
+		{
+			System.out.printf("[package %s version %s] ", pp.getName(), pp.getVersion());
+		}
+		System.out.print("\n");
+	}
 	
-	System.out.println(repositoryToBooleanExp(improvedRepository, improvedRepository.get(0)));
+	//System.out.println(repositoryToBooleanExp(improvedRepository, improvedRepository.get(0)));
+	
+	//System.out.print("\n\n\n");
+	
+	
   }
 
   static String readFile(String filename) throws IOException {
@@ -258,12 +265,70 @@ public class Main {
   
   static String repositoryToBooleanExp2(List<PackageImproved> improvedRepository, List<List<Package>> positiveConstraints, List<List<Package>> negativeConstraints)
   {
-	  String booleanExp = "";
+	  List<String[]> testConstraints = new ArrayList<>();
 	  
+	  for(List<Package> pc : positiveConstraints)
+	  {
+		  List<String> newArr = new ArrayList<>();
+		  for(Package ppc : pc)
+		  {
+			  newArr.add("[packageIdent]" + ppc.toString() + "[packageIdent]");
+		  }
+		  
+		  String[] newArr2 = new String[newArr.size()];
+		  newArr2 = newArr.toArray(newArr2);
+		  testConstraints.add(newArr2);
+	  }
 	  
+	  for(List<Package> nc : negativeConstraints)
+	  {
+		  List<String> newArr = new ArrayList<>();
+		  for(Package nnc : nc)
+		  {
+			  newArr.add("~" + "[packageIdent]" + nnc.toString() + "[packageIdent]");
+		  }
+		  String[] newArr2 = new String[newArr.size()];
+		  newArr2 = newArr.toArray(newArr2);
+		  testConstraints.add(newArr2);
+	  }
 	  
-	  return null;
+	  List<ImmutableList<String>> immutableElements = makeListofImmutable(testConstraints);
+	  List<List<String>> cartesianProduct = Lists.cartesianProduct(immutableElements);
+	  //System.out.println(cartesianProduct);
+	  
+	  String booleanExp = "(";
+	  
+	  for(List<String> cp : cartesianProduct)
+	  {
+		  booleanExp = booleanExp + "(";
+		  for(String scp : cp)
+		  {
+			  booleanExp = booleanExp + scp + " & ";
+		  }
+		  booleanExp = booleanExp.substring(0, booleanExp.length() - 3) + ") | ";
+	  }
+	  
+	  booleanExp = booleanExp.substring(0, booleanExp.length() - 3) + ")";
+	  for(PackageImproved p : improvedRepository)
+	  {
+		  {
+			  booleanExp = booleanExp.replace("[packageIdent]" + p.toString() + "[packageIdent]", packageToBooleanExp(p));
+		  }
+	  }
+	  System.out.println(booleanExp.replace("[packageIdent]", ""));
+	  return booleanExp.replace("[packageIdent]", "");
   }
+  
+  //LINK: https://stackoverflow.com/a/37490796
+  //AUTHOR: https://stackoverflow.com/users/433814/marcello-de-sales
+  //DATE: May 27 2016
+  private static List<ImmutableList<String>> makeListofImmutable(List<String[]> values) {
+	  List<ImmutableList<String>> converted = new LinkedList<>();
+	  values.forEach(array -> {
+	    converted.add(ImmutableList.copyOf(array));
+	  });
+	  return converted;
+	}
   
   static String packageToBooleanExp(PackageImproved p)
   {
