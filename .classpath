@@ -10,5 +10,7 @@
 	<classpathentry kind="lib" path="lib/guava-27.0.1-jre.jar"/>
 	<classpathentry kind="lib" path="lib/logicng-1.4.1.jar"/>
 	<classpathentry kind="lib" path="lib/antlr4-runtime-4.7.1.jar"/>
+	<classpathentry kind="lib" path="lib/jgrapht-core-1.3.0.jar"/>
+	<classpathentry kind="lib" path="lib/jheaps-0.9.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

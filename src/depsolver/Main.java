@@ -49,45 +49,45 @@ public class Main {
     	
     	for(List<Package> deps : p.getDepends())
     	{
-    		System.out.print("DEP: ");
+    		//System.out.print("DEP: ");
     		for(Package dp : deps)
     		{
-    			System.out.printf("[package %s version %s] ", dp.getName(), dp.getVersion());
+    			//System.out.printf("[package %s version %s] ", dp.getName(), dp.getVersion());
     		}
-    		System.out.print("\n");
+    		//System.out.print("\n");
     	}
     	
     	for(Package conf : p.getConflicts())
     	{
-    		System.out.printf("CONF: [package %s version %s]\n", conf.getName(), conf.getVersion());
+    		//System.out.printf("CONF: [package %s version %s]\n", conf.getName(), conf.getVersion());
     	}
-    	System.out.print("\n");
+    	//System.out.print("\n");
     }
     
     for(List<Package> pc : positiveConstraints)
     {
-    	System.out.print("+CONSTRAINT: ");
+    	//System.out.print("+CONSTRAINT: ");
     	for(Package ppc : pc)
     	{
-    		System.out.printf("[package %s version %s]", ppc.getName(), ppc.getVersion());
+    		//System.out.printf("[package %s version %s]", ppc.getName(), ppc.getVersion());
     	}
-    	System.out.print("\n");
+    	//System.out.print("\n");
     	
     }
     
     for(List<Package> nc : negativeConstraints)
     {
-    	System.out.print("-CONSTRAINT: ");
+    	//System.out.print("-CONSTRAINT: ");
     	for(Package nnc : nc)
     	{
-    		System.out.printf("[package %s version %s]", nnc.getName(), nnc.getVersion());
+    		//System.out.printf("[package %s version %s]", nnc.getName(), nnc.getVersion());
     	}
-    	System.out.print("\n");
+    	//System.out.print("\n");
     }
     
     for(Package ic : initialState)
     {
-    	System.out.printf("INSTALLED: package %s version %s\n", ic.getName(), ic.getVersion());
+    	//System.out.printf("INSTALLED: package %s version %s\n", ic.getName(), ic.getVersion());
     }
     
     final FormulaFactory f = new FormulaFactory();
@@ -97,7 +97,7 @@ public class Main {
 	String booleanExp = repositoryToBooleanExp2(improvedRepository, positiveConstraints, negativeConstraints);
 	
 	try {
-		formula = p.parse("A1 & ((B1 & C1 & ~D435 & ~D436 & ~D429) | (C1 & ~(D429 & ~B1)))");
+		formula = p.parse(booleanExp);
 	} catch (ParserException e) {
 		e.printStackTrace();
 	}
@@ -109,26 +109,35 @@ public class Main {
 	
 	for(Assignment a : allValidStates)
 	{
-		System.out.println(a.toString());
+		//System.out.println(a.toString());
 	}
 	
 	List<List<PackageImproved>> allValidStatesAsPackages = getPackagesFromModel(allValidStates, improvedRepository);
-
+	
+	List<PackageListScored> packageListScored = new ArrayList<>();
+	
 	for(List<PackageImproved> validState : allValidStatesAsPackages)
 	{
-		System.out.print("SET: ");
+		packageListScored.add(new PackageListScored(validState));
+	}
+	
+	
+	
+	for(List<PackageImproved> validState : allValidStatesAsPackages)
+	{
+		//System.out.print("SET: ");
 		for(PackageImproved pp : validState)
 		{
-			System.out.printf("[package %s version %s] ", pp.getName(), pp.getVersion());
+			//System.out.printf("[package %s version %s] ", pp.getName(), pp.getVersion());
 		}
-		System.out.print("\n");
+		//System.out.print("\n");
 	}
 	
 	//System.out.println(repositoryToBooleanExp(improvedRepository, improvedRepository.get(0)));
 	
 	//System.out.print("\n\n\n");
 	
-	
+	printInstallationOrder(packageListScored);
   }
 
   static String readFile(String filename) throws IOException {
@@ -426,5 +435,29 @@ public class Main {
 	  }
 
 	  return packages;
+  }
+  
+  static void printInstallationOrder(List<PackageListScored> scoredPackageList)
+  {
+	  Integer index = null;
+	  Integer topScore = null;
+	  
+	  for(int i = 0; i < scoredPackageList.size(); i++)
+	  {
+		  if(i == 0)
+		  {
+			  topScore = scoredPackageList.get(i).getScore();
+			  index = i;
+		  }
+		  
+		  if(topScore > scoredPackageList.get(i).getScore())
+		  {
+			  topScore = scoredPackageList.get(i).getScore();
+			  index = i;
+		  }
+	  }
+	  
+	  scoredPackageList.get(index).TopologicalSort();
+	  //System.out.println(topScore);
   }
 }
