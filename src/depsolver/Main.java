@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -45,7 +46,7 @@ public class Main {
     
     for(PackageImproved p : improvedRepository)
     {
-    	System.out.printf("package %s version %s\n", p.getName(), p.getVersion());
+    	//System.out.printf("package %s version %s\n", p.getName(), p.getVersion());
     	
     	for(List<Package> deps : p.getDepends())
     	{
@@ -213,7 +214,7 @@ public class Main {
 			  booleanExp = booleanExp.replace("[packageIdent]" + p.toString() + "[packageIdent]", packageToBooleanExp(p));
 		  }
 	  }
-	  System.out.println(booleanExp.replace("[packageIdent]", ""));
+	  //System.out.println(booleanExp.replace("[packageIdent]", ""));
 	  return booleanExp.replace("[packageIdent]", "");
   }
   
@@ -439,25 +440,41 @@ public class Main {
   
   static void printInstallationOrder(List<PackageListScored> scoredPackageList)
   {
-	  Integer index = null;
-	  Integer topScore = null;
+	  Collections.sort(scoredPackageList, (s1, s2) -> s1.getScore()-s2.getScore());
 	  
-	  for(int i = 0; i < scoredPackageList.size(); i++)
-	  {
-		  if(i == 0)
-		  {
-			  topScore = scoredPackageList.get(i).getScore();
-			  index = i;
-		  }
+	  //Integer index = null;
+	 // Integer topScore = null;
+	  
+	  
+	  //for(int i = 0; i < scoredPackageList.size(); i++)
+	  //{
+		//  if(i == 0)
+		//  {
+		//	  topScore = scoredPackageList.get(i).getScore();
+		//	  index = i;
+		//  }
 		  
-		  if(topScore > scoredPackageList.get(i).getScore())
+	//	  if(topScore > scoredPackageList.get(i).getScore())
+	//	  {
+	//		  topScore = scoredPackageList.get(i).getScore();
+	//		  index = i;
+	//	  }
+	 // }
+	  Integer index = 0;
+	  Boolean success = false;
+	  while(!success)
+	  {
+		  String output = scoredPackageList.get(index).TopologicalSort();
+		  
+		  if(!output.equals("Cyclic dependency"))
 		  {
-			  topScore = scoredPackageList.get(i).getScore();
-			  index = i;
+			  System.out.println(output);
+			  //System.out.println(scoredPackageList.get(index).getScore());
+			  success = true;
 		  }
+		  index++;
 	  }
 	  
-	  scoredPackageList.get(index).TopologicalSort();
 	  //System.out.println(topScore);
   }
 }

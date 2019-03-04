@@ -1,9 +1,12 @@
 package depsolver;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 import java.util.Stack;
 
+import org.jgrapht.alg.cycle.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
@@ -68,30 +71,40 @@ public class PackageListScored {
 		return directedGraph;
 	}
 	
-	public void TopologicalSort() 
+	public String TopologicalSort() 
 	{
 		TopologicalOrderIterator<String, DefaultEdge> orderIterator;
-		String current;
-		orderIterator = new TopologicalOrderIterator<String, DefaultEdge>(packageGraph);
-		
-		List<String> arrReversed = new ArrayList<>();
-		String jsonOut = "[";
-		
-		
-		
-		while(orderIterator.hasNext())
-		{
-			current = orderIterator.next();
-			arrReversed.add(current);
+		CycleDetector<String, DefaultEdge> cycleDetector;
+
+
+
+		//https://github.com/jgrapht/jgrapht/wiki/DependencyDemo
+		cycleDetector = new CycleDetector<String, DefaultEdge>(packageGraph);
+
+		if (cycleDetector.detectCycles()) {
+			return "Cyclic dependency";
 		}
-		
-		for(int i = arrReversed.size() - 1; i >= 0; i--)
+		else
 		{
-			jsonOut = jsonOut + "\"+" + arrReversed.get(i) + "\","; 
+			orderIterator = new TopologicalOrderIterator<String, DefaultEdge>(packageGraph);
+			String current;
+
+			List<String> arrReversed = new ArrayList<>();
+			while(orderIterator.hasNext())
+			{
+				current = orderIterator.next();
+				arrReversed.add(current);
+			}
+
+			String jsonOut = "[";
+			for(int i = arrReversed.size() - 1; i >= 0; i--)
+			{
+				jsonOut = jsonOut + "\"+" + arrReversed.get(i) + "\",";
+			}
+
+			jsonOut = jsonOut.substring(0, jsonOut.length() - 1);
+			jsonOut = jsonOut + "]";
+			return jsonOut;
 		}
-		
-		jsonOut = jsonOut.substring(0, jsonOut.length() - 1);
-		jsonOut = jsonOut + "]";
-		System.out.println(jsonOut);
 	}
 }
