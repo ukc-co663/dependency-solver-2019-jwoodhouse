@@ -58,12 +58,9 @@ public class PackageListScored {
 			{
 				for(Package dpp : dp)
 				{
-					for(PackageImproved pp : validPackageState)
+					if(directedGraph.containsVertex(dpp.getName() + "=" + dpp.getVersion()))
 					{
-						if(dpp.toString().equals(pp.toString()))
-						{
-							directedGraph.addEdge(p.getName() + "=" + p.getVersion(), dpp.getName() + "=" + dpp.getVersion());
-						}
+						directedGraph.addEdge(p.getName() + "=" + p.getVersion(), dpp.getName() + "=" + dpp.getVersion());
 					}
 				}
 			}
