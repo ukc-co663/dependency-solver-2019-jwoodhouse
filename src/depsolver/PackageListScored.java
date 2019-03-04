@@ -13,12 +13,14 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 
 public class PackageListScored {
 	private List<PackageImproved> validPackageState;
+	private List<Package> packagesToUninstall;
 	private Integer score;
 	private DefaultDirectedGraph<String, DefaultEdge> packageGraph;
 
 	
 	public PackageListScored(List<PackageImproved> validPackageState)
 	{
+		packagesToUninstall = new ArrayList<>();
 		this.validPackageState = validPackageState;
 		Integer score = 0;
 		
@@ -29,6 +31,7 @@ public class PackageListScored {
 		
 		this.score = score;
 		packageGraph = generateGraph();
+		
 	}
 	
 	public List<PackageImproved> getPackageList()
@@ -73,9 +76,6 @@ public class PackageListScored {
 		TopologicalOrderIterator<String, DefaultEdge> orderIterator;
 		CycleDetector<String, DefaultEdge> cycleDetector;
 
-
-
-		//https://github.com/jgrapht/jgrapht/wiki/DependencyDemo
 		cycleDetector = new CycleDetector<String, DefaultEdge>(packageGraph);
 
 		if (cycleDetector.detectCycles()) {
@@ -94,6 +94,16 @@ public class PackageListScored {
 			}
 
 			String jsonOut = "[";
+			if(!packagesToUninstall.isEmpty())
+			{
+			for(Package p : packagesToUninstall)
+			{
+				jsonOut = jsonOut + "\"-" + p.getName() + "=" + p.getVersion() + "\",";
+			}
+			jsonOut = jsonOut.substring(0, jsonOut.length() - 1) + ",";
+			}
+			
+			
 			for(int i = arrReversed.size() - 1; i >= 0; i--)
 			{
 				jsonOut = jsonOut + "\"+" + arrReversed.get(i) + "\",";
@@ -103,5 +113,11 @@ public class PackageListScored {
 			jsonOut = jsonOut + "]";
 			return jsonOut;
 		}
+	}
+		
+	public void addPackageToUninstall(Package installedConflict)
+	{
+		packagesToUninstall.add(installedConflict);
+		score = score + 1000000;
 	}
 }
