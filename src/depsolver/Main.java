@@ -39,7 +39,7 @@ public class Main {
     List<String> constraints = JSON.parseObject(readFile(args[2]), strListType);
     
     
-    List<PackageImproved> improvedRepository = buildImprovedRepository(repository);
+    populateRepository(repository);
     List<List<Package>> positiveConstraints = getPackagesFromConstraints(constraints, '+', repository);
     List<List<Package>> negativeConstraints = getPackagesFromConstraints(constraints, '-', repository);
     List<Package> initialState = getPackagesFromInitialState(initial, repository);
@@ -48,7 +48,7 @@ public class Main {
 	final PropositionalParser p = new PropositionalParser(f);
 	Formula formula = null;
 	
-	String booleanExp = repositoryToBooleanExp2(improvedRepository, positiveConstraints, negativeConstraints);
+	String booleanExp = repositoryToBooleanExp2(repository, positiveConstraints, negativeConstraints);
 	
 	try {
 		formula = p.parse(booleanExp);
@@ -60,11 +60,11 @@ public class Main {
 	miniSat.add(formula);
 	List<Assignment> allValidStates = miniSat.enumerateAllModels();
 
-	List<List<PackageImproved>> allValidStatesAsPackages = getPackagesFromModel(allValidStates, improvedRepository);
+	List<List<Package>> allValidStatesAsPackages = getPackagesFromModel(allValidStates, repository);
 	
 	List<PackageListScored> packageListScored = new ArrayList<>();
 	
-	for(List<PackageImproved> validState : allValidStatesAsPackages)
+	for(List<Package> validState : allValidStatesAsPackages)
 	{
 		packageListScored.add(new PackageListScored(validState));
 	}
@@ -80,11 +80,11 @@ public class Main {
     return sb.toString();
   }
   
-  static String repositoryToBooleanExp(List<PackageImproved> improvedRepository, PackageImproved packageToInstall)
+  static String repositoryToBooleanExp(List<Package> repository, Package packageToInstall)
   {
 	  String booleanExp = packageToBooleanExp(packageToInstall);
 	  
-	  for(PackageImproved p : improvedRepository)
+	  for(Package p : repository)
 	  {
 		  if(!p.toString().equals(packageToInstall.toString()))
 		  {
@@ -94,7 +94,7 @@ public class Main {
 	  return booleanExp.replace("[packageIdent]", "");
   }
   
-  static String repositoryToBooleanExp2(List<PackageImproved> improvedRepository, List<List<Package>> positiveConstraints, List<List<Package>> negativeConstraints)
+  static String repositoryToBooleanExp2(List<Package> repository, List<List<Package>> positiveConstraints, List<List<Package>> negativeConstraints)
   {
 	  List<String[]> testConstraints = new ArrayList<>();
 	  
@@ -140,7 +140,7 @@ public class Main {
 	  }
 	  
 	  booleanExp = booleanExp.substring(0, booleanExp.length() - 3) + ")";
-	  for(PackageImproved p : improvedRepository)
+	  for(Package p : repository)
 	  {
 		  {
 			  booleanExp = booleanExp.replace("[packageIdent]" + p.toString() + "[packageIdent]", packageToBooleanExp(p));
@@ -161,11 +161,11 @@ public class Main {
 	  return converted;
 	}
   
-  static String packageToBooleanExp(PackageImproved p)
+  static String packageToBooleanExp(Package p)
   {
 	  String booleanExp = "(" + "[packageIdent]" + p.toString() + "[packageIdent]";
 
-	  for(List<Package> deps : p.getDepends())
+	  for(List<Package> deps : p.getDependsAsPackages())
 	  {
 		  booleanExp = booleanExp + " & (";
 		  for(Package dp : deps)
@@ -175,7 +175,7 @@ public class Main {
 		  booleanExp = booleanExp.substring(0, booleanExp.length() -3) + ")";
 	  }
 
-	  for(Package conf : p.getConflicts())
+	  for(Package conf : p.getConflictsAsPackages())
 	  {
 		  booleanExp = booleanExp + " & ~" + "[packageIdent]" + conf.toString() + "[packageIdent]";
 	  }
@@ -183,46 +183,39 @@ public class Main {
 	  return booleanExp + ")";
   }
   
-  static List<PackageImproved> buildImprovedRepository(List<Package> repository)
+  static void populateRepository(List<Package> repository)
   {
-	  List<PackageImproved> improvedRepository = new ArrayList<>();
-	  for (Package p : repository)
+	  for(Package p : repository)
 	  {
-		  String name = p.getName();
-		  String version = p.getVersion();
-		  Integer size = p.getSize();
-		  List<List<Package>> depends = new ArrayList<>();
-		  List<Package> conflicts = new ArrayList<>();
+		  List<List<Package>> dependsAsPackages = new ArrayList<>();
+		  List<Package> conflictsAsPackages = new ArrayList<>();
 		  
-		  for(List<String> deps : p.getDepends())
+		  for(List<String> dependencySetsString : p.getDepends())
 		  {
-			  List<Package> orDepends = new ArrayList<>();
-			  
-			  for(String singleDep : deps)
+			  List<Package> dependencySetAsPackageList = new ArrayList<>();
+			  for(String singleDependencyString : dependencySetsString)
 			  {
-				  List<Package> strToPackages = getPackagesFromString(singleDep, repository);
-				  for(Package dp : strToPackages)
+				  List<Package> dependencyStringAsPackages = getPackagesFromString(singleDependencyString, repository);
+				  for(Package singleDependencyPackage : dependencyStringAsPackages)
 				  {
-					  orDepends.add(dp);
+					  dependencySetAsPackageList.add(singleDependencyPackage);
 				  }
-				  
 			  }
-			  depends.add(orDepends);
+			  dependsAsPackages.add(dependencySetAsPackageList);
 		  }
 		  
-		  for(String conf : p.getConflicts())
+		  for(String conflictAsString : p.getConflicts())
 		  {
-			  List<Package> strToPackages = getPackagesFromString(conf, repository);
-			  for(Package cp : strToPackages)
+			  List<Package> conflictStringAsPackages = getPackagesFromString(conflictAsString, repository);
+			  for(Package conflictAsPackage : conflictStringAsPackages)
 			  {
-				  conflicts.add(cp);
+				  conflictsAsPackages.add(conflictAsPackage);
 			  }
 		  }
 		  
-		  PackageImproved pi = new PackageImproved(name, version, size, depends, conflicts);
-		  improvedRepository.add(pi);
+		  p.setDependsAsPackages(dependsAsPackages);
+		  p.setConflictsAsPackages(conflictsAsPackages);
 	  }
-	  return improvedRepository;
   }
   
   static List<List<Package>> getPackagesFromConstraints(List<String> constraints, Character constraintType, List<Package> repository)
@@ -259,16 +252,16 @@ public class Main {
 	  return versionA.compareTo(versionB);
   }
   
-  static List<List<PackageImproved>> getPackagesFromModel(List<Assignment> satModel, List<PackageImproved> improvedRepository)
+  static List<List<Package>> getPackagesFromModel(List<Assignment> satModel, List<Package> repository)
   {
-	  List<List<PackageImproved>> listOfStates = new ArrayList<>();
+	  List<List<Package>> listOfStates = new ArrayList<>();
 	  
 	  for(Assignment a : satModel)
 	  {
-		  List<PackageImproved> state = new ArrayList<>();
+		  List<Package> state = new ArrayList<>();
 		  for (Variable v : a.positiveLiterals())
 		  {
-			for(PackageImproved p : improvedRepository)
+			for(Package p : repository)
 			{
 				if(p.toString().equals(v.toString()))
 				{
@@ -398,9 +391,9 @@ public class Main {
 	  {
 		  for(PackageListScored scoredPackage : scoredPackageList)
 		  {
-			  for(PackageImproved validPackageState : scoredPackage.getPackageList())
+			  for(Package validPackageState : scoredPackage.getPackageList())
 			  {
-				  for(Package conflict : validPackageState.getConflicts())
+				  for(Package conflict : validPackageState.getConflictsAsPackages())
 				  {
 					  if(p.toString().equals(conflict.toString()))
 					  {
@@ -418,9 +411,9 @@ public class Main {
 	  {
 		  for(PackageListScored scoredPackage : scoredPackageList)
 		  {
-			  for(PackageImproved validPackageState : scoredPackage.getPackageList())
+			  for(Package validPackageState : scoredPackage.getPackageList())
 			  {
-				  for(List<Package> dependencies : validPackageState.getDepends())
+				  for(List<Package> dependencies : validPackageState.getDependsAsPackages())
 				  {
 					  for(Package dependency : dependencies)
 					  {

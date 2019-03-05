@@ -12,21 +12,21 @@ import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
 
 public class PackageListScored {
-	private List<PackageImproved> validPackageState;
+	private List<Package> validPackageState;
 	private List<String> packagesToUninstall;
 	private List<String> packagesToKeep;
 	private Integer score;
 	private DefaultDirectedGraph<String, DefaultEdge> packageGraph;
 
 	
-	public PackageListScored(List<PackageImproved> validPackageState)
+	public PackageListScored(List<Package> validPackageState)
 	{
 		packagesToUninstall = new ArrayList<>();
 		packagesToKeep = new ArrayList<>();
 		this.validPackageState = validPackageState;
 		Integer score = 0;
 		
-		for(PackageImproved p : validPackageState)
+		for(Package p : validPackageState)
 		{
 			score = score + p.getSize();
 		}
@@ -36,7 +36,7 @@ public class PackageListScored {
 		
 	}
 	
-	public List<PackageImproved> getPackageList()
+	public List<Package> getPackageList()
 	{
 		return validPackageState;
 	}
@@ -52,14 +52,14 @@ public class PackageListScored {
 	{
 		DefaultDirectedGraph<String, DefaultEdge> directedGraph = new DefaultDirectedGraph<>(DefaultEdge.class);
 		
-		for(PackageImproved p : validPackageState)
+		for(Package p : validPackageState)
 		{
 			directedGraph.addVertex(p.getName() + "=" + p.getVersion());
 		}
 		
-		for(PackageImproved p : validPackageState)
+		for(Package p : validPackageState)
 		{
-			for(List<Package> dp : p.getDepends())
+			for(List<Package> dp : p.getDependsAsPackages())
 			{
 				for(Package dpp : dp)
 				{
