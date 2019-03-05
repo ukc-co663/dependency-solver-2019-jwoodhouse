@@ -245,10 +245,6 @@ public class Main {
 
   static int compareVersions(String versionA, String versionB)
   {
-	  //this definitely works for lexicographical versions.
-	  //Positive return = A > B
-	  //Negative return = B < A
-	  //0 return = A == B
 	  return versionA.compareTo(versionB);
   }
   
@@ -367,13 +363,12 @@ public class Main {
   {
 	  Collections.sort(scoredPackageList, (s1, s2) -> s1.getScore()-s2.getScore());
 	  
-	  
-	  
 	  Integer index = 0;
 	  Boolean success = false;
+	  
 	  while(!success)
 	  {
-		  String output = scoredPackageList.get(index).TopologicalSort();
+		  String output = scoredPackageList.get(index).topologicalSortAsJSON();
 		  
 		  if(!output.equals("Cyclic dependency"))
 		  {

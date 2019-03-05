@@ -27,16 +27,14 @@ public class PackageListScored {
 		packagesToUninstall = new ArrayList<>();
 		packagesToKeep = new ArrayList<>();
 		this.validPackageState = validPackageState;
-		Integer score = 0;
+		score = 0;
 		
 		for(Package p : validPackageState)
 		{
 			score = score + p.getSize();
 		}
 		
-		this.score = score;
 		packageGraph = generateGraph();
-		
 	}
 	
 	public List<Package> getPackageList()
@@ -48,8 +46,6 @@ public class PackageListScored {
 	{
 		return score;
 	}
-	
-	//graph return
 	
 	private DefaultDirectedGraph<String, DefaultEdge> generateGraph()
 	{
@@ -76,7 +72,7 @@ public class PackageListScored {
 		return directedGraph;
 	}
 	
-	public String TopologicalSort() 
+	public String topologicalSortAsJSON() 
 	{
 		TopologicalOrderIterator<String, DefaultEdge> orderIterator;
 		CycleDetector<String, DefaultEdge> cycleDetector;
@@ -99,7 +95,6 @@ public class PackageListScored {
 				current = orderIterator.next();
 				arrReversed.add("+" + current);
 			}
-			
 			Collections.reverse(arrReversed);
 			
 			jsonOut.addAll(packagesToUninstall);
