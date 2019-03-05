@@ -1,6 +1,7 @@
 package depsolver;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -10,6 +11,8 @@ import org.jgrapht.alg.cycle.CycleDetector;
 import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.traverse.TopologicalOrderIterator;
+
+import com.alibaba.fastjson.JSON;
 
 public class PackageListScored {
 	private List<Package> validPackageState;
@@ -89,47 +92,39 @@ public class PackageListScored {
 			String current;
 
 			List<String> arrReversed = new ArrayList<>();
+			ArrayList<String> jsonOut = new ArrayList<>();
+			
 			while(orderIterator.hasNext())
 			{
 				current = orderIterator.next();
-				arrReversed.add(current);
-			}
-
-			String jsonOut = "[";
-			if(!packagesToUninstall.isEmpty())
-			{
-			for(String p : packagesToUninstall)
-			{
-				jsonOut = jsonOut + "\"-" + p + "\",";
-			}
-			jsonOut = jsonOut.substring(0, jsonOut.length() - 1) + ",";
+				arrReversed.add("+" + current);
 			}
 			
+			Collections.reverse(arrReversed);
 			
-			for(int i = arrReversed.size() - 1; i >= 0; i--)
+			jsonOut.addAll(packagesToUninstall);
+			
+			for(String p : arrReversed)
 			{
-				if(!(packagesToKeep.contains(arrReversed.get(i))))
+				if(!(packagesToKeep.contains(p)))
 				{
-					jsonOut = jsonOut + "\"+" + arrReversed.get(i) + "\",";
+					jsonOut.add(p);
 				}
-				
 			}
 
-			jsonOut = jsonOut.substring(0, jsonOut.length() - 1);
-			jsonOut = jsonOut + "]";
-			return jsonOut;
+			return JSON.toJSONString(jsonOut);
 		}
 	}
 		
 	public void addPackageToUninstall(Package installedConflict)
 	{
-		packagesToUninstall.add(installedConflict.getName() + "=" + installedConflict.getVersion());
+		packagesToUninstall.add("-" + installedConflict.getName() + "=" + installedConflict.getVersion());
 		score = score + 1000000;
 	}
 	
 	public void addPackageToKeep(Package installedDependency)
 	{
-		packagesToKeep.add(installedDependency.getName() + "=" + installedDependency.getVersion());
+		packagesToKeep.add("+" + installedDependency.getName() + "=" + installedDependency.getVersion());
 		score = score - installedDependency.getSize();
 	}
 }
