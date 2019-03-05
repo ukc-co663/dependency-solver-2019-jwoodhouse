@@ -77,27 +77,26 @@ public class PackageListScored {
 		TopologicalOrderIterator<String, DefaultEdge> orderIterator;
 		CycleDetector<String, DefaultEdge> cycleDetector;
 
-		cycleDetector = new CycleDetector<String, DefaultEdge>(packageGraph);
+		cycleDetector = new CycleDetector<>(packageGraph);
 
 		if (cycleDetector.detectCycles()) {
 			return "Cyclic dependency";
 		}
 		else
 		{
-			orderIterator = new TopologicalOrderIterator<String, DefaultEdge>(packageGraph);
+			orderIterator = new TopologicalOrderIterator<>(packageGraph);
 			String current;
 
 			List<String> arrReversed = new ArrayList<>();
-			ArrayList<String> jsonOut = new ArrayList<>();
-			
+
 			while(orderIterator.hasNext())
 			{
 				current = orderIterator.next();
 				arrReversed.add("+" + current);
 			}
 			Collections.reverse(arrReversed);
-			
-			jsonOut.addAll(packagesToUninstall);
+
+			ArrayList<String> jsonOut = new ArrayList<>(packagesToUninstall);
 			
 			for(String p : arrReversed)
 			{

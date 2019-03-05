@@ -3,12 +3,7 @@ package depsolver;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import org.logicng.datastructures.Assignment;
 import org.logicng.datastructures.Tristate;
@@ -26,6 +21,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
+@SuppressWarnings("StringConcatenationInLoop")
 public class Main {
   public static void main(String[] args) throws IOException 
   {
@@ -76,7 +72,7 @@ public class Main {
   static String readFile(String filename) throws IOException {
     BufferedReader br = new BufferedReader(new FileReader(filename));
     StringBuilder sb = new StringBuilder();
-    br.lines().forEach(line -> sb.append(line));
+    br.lines().forEach(sb::append);
     return sb.toString();
   }
   
@@ -126,9 +122,9 @@ public class Main {
 	  List<ImmutableList<String>> immutableElements = makeListofImmutable(testConstraints);
 	  List<List<String>> cartesianProduct = Lists.cartesianProduct(immutableElements);
 	  //System.out.println(cartesianProduct);
-	  
+
 	  String booleanExp = "(";
-	  
+
 	  for(List<String> cp : cartesianProduct)
 	  {
 		  booleanExp = booleanExp + "(";
@@ -138,7 +134,7 @@ public class Main {
 		  }
 		  booleanExp = booleanExp.substring(0, booleanExp.length() - 3) + ") | ";
 	  }
-	  
+
 	  booleanExp = booleanExp.substring(0, booleanExp.length() - 3) + ")";
 	  for(Package p : repository)
 	  {
@@ -155,9 +151,7 @@ public class Main {
   //DATE: May 27 2016
   private static List<ImmutableList<String>> makeListofImmutable(List<String[]> values) {
 	  List<ImmutableList<String>> converted = new LinkedList<>();
-	  values.forEach(array -> {
-	    converted.add(ImmutableList.copyOf(array));
-	  });
+	  values.forEach(array -> converted.add(ImmutableList.copyOf(array)));
 	  return converted;
 	}
   
@@ -177,6 +171,7 @@ public class Main {
 
 	  for(Package conf : p.getConflictsAsPackages())
 	  {
+		  //noinspection StringConcatenationInLoop
 		  booleanExp = booleanExp + " & ~" + "[packageIdent]" + conf.toString() + "[packageIdent]";
 	  }
 	  	  
@@ -196,10 +191,7 @@ public class Main {
 			  for(String singleDependencyString : dependencySetsString)
 			  {
 				  List<Package> dependencyStringAsPackages = getPackagesFromString(singleDependencyString, repository);
-				  for(Package singleDependencyPackage : dependencyStringAsPackages)
-				  {
-					  dependencySetAsPackageList.add(singleDependencyPackage);
-				  }
+				  dependencySetAsPackageList.addAll(dependencyStringAsPackages);
 			  }
 			  dependsAsPackages.add(dependencySetAsPackageList);
 		  }
@@ -207,10 +199,7 @@ public class Main {
 		  for(String conflictAsString : p.getConflicts())
 		  {
 			  List<Package> conflictStringAsPackages = getPackagesFromString(conflictAsString, repository);
-			  for(Package conflictAsPackage : conflictStringAsPackages)
-			  {
-				  conflictsAsPackages.add(conflictAsPackage);
-			  }
+			  conflictsAsPackages.addAll(conflictStringAsPackages);
 		  }
 		  
 		  p.setDependsAsPackages(dependsAsPackages);
@@ -361,7 +350,7 @@ public class Main {
   
   static void printInstallationOrder(List<PackageListScored> scoredPackageList)
   {
-	  Collections.sort(scoredPackageList, (s1, s2) -> s1.getScore()-s2.getScore());
+	  scoredPackageList.sort(Comparator.comparingInt(PackageListScored::getScore));
 	  
 	  Integer index = 0;
 	  Boolean success = false;
