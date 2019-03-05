@@ -13,7 +13,8 @@ import org.jgrapht.traverse.TopologicalOrderIterator;
 
 public class PackageListScored {
 	private List<PackageImproved> validPackageState;
-	private List<Package> packagesToUninstall;
+	private List<String> packagesToUninstall;
+	private List<String> packagesToKeep;
 	private Integer score;
 	private DefaultDirectedGraph<String, DefaultEdge> packageGraph;
 
@@ -21,6 +22,7 @@ public class PackageListScored {
 	public PackageListScored(List<PackageImproved> validPackageState)
 	{
 		packagesToUninstall = new ArrayList<>();
+		packagesToKeep = new ArrayList<>();
 		this.validPackageState = validPackageState;
 		Integer score = 0;
 		
@@ -96,9 +98,9 @@ public class PackageListScored {
 			String jsonOut = "[";
 			if(!packagesToUninstall.isEmpty())
 			{
-			for(Package p : packagesToUninstall)
+			for(String p : packagesToUninstall)
 			{
-				jsonOut = jsonOut + "\"-" + p.getName() + "=" + p.getVersion() + "\",";
+				jsonOut = jsonOut + "\"-" + p + "\",";
 			}
 			jsonOut = jsonOut.substring(0, jsonOut.length() - 1) + ",";
 			}
@@ -106,7 +108,11 @@ public class PackageListScored {
 			
 			for(int i = arrReversed.size() - 1; i >= 0; i--)
 			{
-				jsonOut = jsonOut + "\"+" + arrReversed.get(i) + "\",";
+				if(!(packagesToKeep.contains(arrReversed.get(i))))
+				{
+					jsonOut = jsonOut + "\"+" + arrReversed.get(i) + "\",";
+				}
+				
 			}
 
 			jsonOut = jsonOut.substring(0, jsonOut.length() - 1);
@@ -117,7 +123,13 @@ public class PackageListScored {
 		
 	public void addPackageToUninstall(Package installedConflict)
 	{
-		packagesToUninstall.add(installedConflict);
+		packagesToUninstall.add(installedConflict.getName() + "=" + installedConflict.getVersion());
 		score = score + 1000000;
+	}
+	
+	public void addPackageToKeep(Package installedDependency)
+	{
+		packagesToKeep.add(installedDependency.getName() + "=" + installedDependency.getVersion());
+		score = score - installedDependency.getSize();
 	}
 }

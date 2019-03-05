@@ -69,6 +69,7 @@ public class Main {
 		packageListScored.add(new PackageListScored(validState));
 	}
 	addUninstallationsToScoredPackageLists(packageListScored, initialState);
+	addKeepsToScoredPackageLists(packageListScored, initialState);
 	printInstallationOrder(packageListScored);
   }
 
@@ -404,6 +405,29 @@ public class Main {
 					  if(p.toString().equals(conflict.toString()))
 					  {
 						  scoredPackage.addPackageToUninstall(conflict);
+					  }
+				  }
+			  }
+		  }
+	  }
+  }
+  
+  static void addKeepsToScoredPackageLists(List<PackageListScored> scoredPackageList, List<Package> initialState)
+  {
+	  for(Package p : initialState)
+	  {
+		  for(PackageListScored scoredPackage : scoredPackageList)
+		  {
+			  for(PackageImproved validPackageState : scoredPackage.getPackageList())
+			  {
+				  for(List<Package> dependencies : validPackageState.getDepends())
+				  {
+					  for(Package dependency : dependencies)
+					  {
+						  if(p.toString().equals(dependency.toString()))
+						  {
+							  scoredPackage.addPackageToKeep(dependency);
+						  }
 					  }
 				  }
 			  }
