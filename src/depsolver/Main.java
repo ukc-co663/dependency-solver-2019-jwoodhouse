@@ -29,16 +29,16 @@ import com.google.common.collect.Sets;
 public class Main {
   public static void main(String[] args) throws IOException 
   {
-    TypeReference<List<Package>> repoType = new TypeReference<List<Package>>() {};
+    TypeReference<List<Package>> repoType = new TypeReference<>() {};
     
     List<Package> repository = JSON.parseObject(readFile(args[0]), repoType);
     
-    TypeReference<List<String>> strListType = new TypeReference<List<String>>() {};
+    TypeReference<List<String>> strListType = new TypeReference<>() {};
     
     List<String> initial = JSON.parseObject(readFile(args[1]), strListType);
     List<String> constraints = JSON.parseObject(readFile(args[2]), strListType);
     
-    
+
     populateRepository(repository);
     List<List<Package>> positiveConstraints = getPackagesFromConstraints(constraints, '+', repository);
     List<List<Package>> negativeConstraints = getPackagesFromConstraints(constraints, '-', repository);
