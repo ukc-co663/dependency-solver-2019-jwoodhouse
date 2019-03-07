@@ -65,6 +65,7 @@ public class Main {
             packageListScored.add(new PackageListScored(validState));
         }
         addUninstallationsToScoredPackageLists(packageListScored, initialState);
+        addUninstallationsFromConstraints(packageListScored, negativeConstraints, initialState);
         addKeepsToScoredPackageLists(packageListScored, initialState);
         printInstallationOrder(packageListScored);
     }
@@ -407,7 +408,7 @@ public class Main {
             if(!output.equals("Cyclic dependency"))
             {
                 System.out.println(output);
-                //System.out.println(scoredPackageList.get(index).getScore());
+                System.out.println(scoredPackageList.get(index).getScore());
                 success = true;
             }
             index++;
@@ -431,6 +432,24 @@ public class Main {
                     }
                 }
             }
+        }
+    }
+
+    static void addUninstallationsFromConstraints(List<PackageListScored> scoredPackageList, List<List<Package>> negativeConstraints, List<Package> initialState)
+    {
+        for(List<Package> p : negativeConstraints)
+        {
+            for(Package pp : p)
+            {
+                for(PackageListScored scoredPackage : scoredPackageList)
+                {
+                    if(initialState.contains(pp))
+                    {
+                        scoredPackage.addPackageToUninstall(pp);
+                    }
+                }
+            }
+
         }
     }
 
