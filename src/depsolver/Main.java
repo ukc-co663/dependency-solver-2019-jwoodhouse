@@ -408,7 +408,7 @@ public class Main {
             if(!output.equals("Cyclic dependency"))
             {
                 System.out.println(output);
-                System.out.println(scoredPackageList.get(index).getScore());
+                //System.out.println(scoredPackageList.get(index).getScore());
                 success = true;
             }
             index++;
