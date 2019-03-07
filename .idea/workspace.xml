@@ -2,11 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="a2f15c14-e295-4429-83d4-7c0e25b9b782" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/depsolver/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/depsolver/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/depsolver/Package.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/depsolver/Package.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/depsolver/PackageListScored.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/depsolver/PackageListScored.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/tests/example-0/repository.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/example-0/repository.json" afterDir="false" />
     </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -20,8 +16,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/depsolver/Main.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="217">
-              <caret line="246" column="58" selection-start-line="246" selection-start-column="58" selection-end-line="246" selection-end-column="58" />
+            <state relative-caret-position="260">
+              <caret line="409" column="18" selection-start-line="409" selection-start-column="18" selection-end-line="409" selection-end-column="18" />
               <folding>
                 <element signature="e#752#798#0" expanded="true" />
               </folding>
@@ -102,7 +98,7 @@
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1551934380052" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1551934486216" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
@@ -120,7 +116,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Application.seen-9">
+  <component name="RunManager" selected="Application.seen-2">
     <configuration name="example-0" type="Application" factoryName="Application">
       <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
       <module name="dependency-solver-2019-jwoodhouse" />
@@ -236,15 +232,16 @@
       <workItem from="1551799713888" duration="48000" />
       <workItem from="1551811311148" duration="1505000" />
       <workItem from="1551815264532" duration="683000" />
-      <workItem from="1551918348692" duration="15832000" />
+      <workItem from="1551918348692" duration="15938000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="18068000" />
+    <option name="totallyTimeSpent" value="18174000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="23" width="2046" height="1259" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18680765" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
@@ -301,8 +298,8 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/depsolver/Main.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="217">
-          <caret line="246" column="58" selection-start-line="246" selection-start-column="58" selection-end-line="246" selection-end-column="58" />
+        <state relative-caret-position="260">
+          <caret line="409" column="18" selection-start-line="409" selection-start-column="18" selection-end-line="409" selection-end-column="18" />
           <folding>
             <element signature="e#752#798#0" expanded="true" />
           </folding>

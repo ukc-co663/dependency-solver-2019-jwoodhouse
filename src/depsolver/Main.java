@@ -46,7 +46,6 @@ public class Main {
         Formula formula = null;
 
         String booleanExp = repositoryToBooleanExp2(repository, positiveConstraints, negativeConstraints);
-        System.out.println("BOOLEAN EXP: " + booleanExp);
         try {
             formula = p.parse(booleanExp);
         } catch (ParserException e) {
@@ -67,14 +66,7 @@ public class Main {
         }
         addUninstallationsToScoredPackageLists(packageListScored, initialState);
         addKeepsToScoredPackageLists(packageListScored, initialState);
-
-        for(PackageListScored ppp : packageListScored)
-        {
-            System.out.println(ppp.getPackageList());
-        }
-
         printInstallationOrder(packageListScored);
-
     }
 
     static String readFile(String filename) throws IOException {
@@ -82,25 +74,6 @@ public class Main {
         StringBuilder sb = new StringBuilder();
         br.lines().forEach(sb::append);
         return sb.toString();
-    }
-
-    static String repositoryToBooleanExp(List<Package> repository, Package packageToInstall)
-    {
-        String booleanExp = packageToBooleanExp(packageToInstall);
-
-        for(Package p : repository)
-        {
-            if(!p.toString().equals(packageToInstall.toString()))
-            {
-                booleanExp = booleanExp.replace("[packageIdent]" + p.toString() + "[packageIdent]", packageToBooleanExp(p));
-            }
-        }
-        return booleanExp.replace("[packageIdent]", "");
-    }
-
-    static String repositoryToBooleanExp3(List<Package> repository, List<List<Package>> positiveConstraints, List<List<Package>> negativeConstraints)
-    {
-        return null;
     }
 
     static String repositoryToBooleanExp2(List<Package> repository, List<List<Package>> positiveConstraints, List<List<Package>> negativeConstraints)
@@ -434,7 +407,7 @@ public class Main {
             if(!output.equals("Cyclic dependency"))
             {
                 System.out.println(output);
-                System.out.println(scoredPackageList.get(index).getScore());
+                //System.out.println(scoredPackageList.get(index).getScore());
                 success = true;
             }
             index++;
