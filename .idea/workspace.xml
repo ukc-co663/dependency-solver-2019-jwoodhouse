@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="a2f15c14-e295-4429-83d4-7c0e25b9b782" name="Default Changelist" comment="" />
+    <list default="true" id="a2f15c14-e295-4429-83d4-7c0e25b9b782" name="Default Changelist" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/depsolver/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/depsolver/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/depsolver/Package.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/depsolver/Package.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/depsolver/PackageListScored.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/depsolver/PackageListScored.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tests/example-0/repository.json" beforeDir="false" afterPath="$PROJECT_DIR$/tests/example-0/repository.json" afterDir="false" />
+    </list>
     <ignored path="$PROJECT_DIR$/bin/" />
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -9,20 +15,65 @@
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
+  <component name="FileEditorManager">
+    <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/depsolver/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="217">
+              <caret line="246" column="58" selection-start-line="246" selection-start-column="58" selection-end-line="246" selection-end-column="58" />
+              <folding>
+                <element signature="e#752#798#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/depsolver/Package.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="578">
+              <caret line="55" selection-start-line="55" selection-end-line="55" />
+              <folding>
+                <element signature="imports" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/depsolver/PackageListScored.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="561">
+              <caret line="51" column="112" lean-forward="true" selection-start-line="49" selection-start-column="4" selection-end-line="51" selection-end-column="112" />
+            </state>
+          </provider>
+        </entry>
+      </file>
+    </leaf>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="IdeDocumentHistory">
+    <option name="CHANGED_PATHS">
+      <list>
+        <option value="$PROJECT_DIR$/src/depsolver/Package.java" />
+        <option value="$PROJECT_DIR$/src/depsolver/Main.java" />
+      </list>
+    </option>
+  </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="260" />
-    <option name="y" value="20" />
-    <option name="width" value="1400" />
-    <option name="height" value="1000" />
+    <option name="y" value="23" />
+    <option name="width" value="2046" />
+    <option name="height" value="1259" />
   </component>
   <component name="ProjectView">
     <navigator proportions="" version="1">
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -30,20 +81,32 @@
               <item name="dependency-solver-2019-jwoodhouse" type="b2602c69:ProjectViewProjectNode" />
               <item name="dependency-solver-2019-jwoodhouse" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="dependency-solver-2019-jwoodhouse" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dependency-solver-2019-jwoodhouse" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="dependency-solver-2019-jwoodhouse" type="b2602c69:ProjectViewProjectNode" />
+              <item name="dependency-solver-2019-jwoodhouse" type="462c0819:PsiDirectoryNode" />
+              <item name="src" type="462c0819:PsiDirectoryNode" />
+              <item name="depsolver" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
       </pane>
       <pane id="PackagesPane" />
-      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
+    <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1551934380052" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="run.code.analysis.last.selected.profile" value="pProject Default" />
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -57,6 +120,109 @@
       </list>
     </option>
   </component>
+  <component name="RunManager" selected="Application.seen-9">
+    <configuration name="example-0" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
+      <module name="dependency-solver-2019-jwoodhouse" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\example-0\repository.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\example-0\initial.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\example-0\constraints.json&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="example-1" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
+      <module name="dependency-solver-2019-jwoodhouse" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\example-1\repository.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\example-1\initial.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\example-1\constraints.json&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="seen-0" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
+      <module name="dependency-solver-2019-jwoodhouse" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-0\repository.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-0\initial.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-0\constraints.json&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="seen-2" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
+      <module name="dependency-solver-2019-jwoodhouse" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-2\repository.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-2\initial.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-2\constraints.json&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="seen-3" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
+      <module name="dependency-solver-2019-jwoodhouse" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-3\repository.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-3\initial.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-3\constraints.json&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="seen-4" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
+      <module name="dependency-solver-2019-jwoodhouse" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-4\repository.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-4\initial.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-4\constraints.json&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="seen-5" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
+      <module name="dependency-solver-2019-jwoodhouse" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-5\repository.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-5\initial.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-5\constraints.json&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="seen-6" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
+      <module name="dependency-solver-2019-jwoodhouse" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-6\repository.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-6\initial.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-6\constraints.json&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="seen-7" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
+      <module name="dependency-solver-2019-jwoodhouse" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-7\repository.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-7\initial.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-7\constraints.json&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="seen-8" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
+      <module name="dependency-solver-2019-jwoodhouse" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-8\repository.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-8\initial.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-8\constraints.json&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="seen-9" type="Application" factoryName="Application">
+      <option name="MAIN_CLASS_NAME" value="depsolver.Main" />
+      <module name="dependency-solver-2019-jwoodhouse" />
+      <option name="PROGRAM_PARAMETERS" value="&quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-9\repository.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-9\initial.json&quot; &quot;D:\GIT\dependency-solver-2019-jwoodhouse\tests\seen-9\constraints.json&quot;" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <list>
+      <item itemvalue="Application.seen-0" />
+      <item itemvalue="Application.seen-2" />
+      <item itemvalue="Application.seen-3" />
+      <item itemvalue="Application.seen-4" />
+      <item itemvalue="Application.seen-5" />
+      <item itemvalue="Application.seen-6" />
+      <item itemvalue="Application.seen-7" />
+      <item itemvalue="Application.seen-8" />
+      <item itemvalue="Application.seen-9" />
+      <item itemvalue="Application.example-0" />
+      <item itemvalue="Application.example-1" />
+    </list>
+  </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -68,46 +234,80 @@
       <option name="presentableId" value="Default" />
       <updated>1551799708897</updated>
       <workItem from="1551799713888" duration="48000" />
+      <workItem from="1551811311148" duration="1505000" />
+      <workItem from="1551815264532" duration="683000" />
+      <workItem from="1551918348692" duration="15832000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="48000" />
+    <option name="totallyTimeSpent" value="18068000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="260" y="20" width="1400" height="1000" extended-state="0" />
+    <frame x="0" y="23" width="2046" height="1259" extended-state="0" />
     <layout>
-      <window_info id="Image Layers" />
-      <window_info id="Designer" />
-      <window_info id="UI Designer" />
-      <window_info id="Capture Tool" />
-      <window_info id="Favorites" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="0" visible="true" weight="0.25" />
+      <window_info content_ui="combo" id="Project" order="0" visible="true" weight="0.18680765" />
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
-      <window_info anchor="bottom" id="Docker" show_stripe_button="false" />
-      <window_info anchor="bottom" id="Database Changes" />
-      <window_info anchor="bottom" id="Version Control" />
-      <window_info anchor="bottom" id="Terminal" />
-      <window_info anchor="bottom" id="Event Log" side_tool="true" />
+      <window_info id="Image Layers" order="2" />
+      <window_info id="Designer" order="3" />
+      <window_info id="UI Designer" order="4" />
+      <window_info id="Capture Tool" order="5" />
+      <window_info id="Favorites" order="6" side_tool="true" />
+      <window_info anchor="bottom" id="Inspection Results" weight="0.32969603" />
       <window_info anchor="bottom" id="Message" order="0" />
       <window_info anchor="bottom" id="Find" order="1" />
-      <window_info anchor="bottom" id="Run" order="2" />
-      <window_info anchor="bottom" id="Debug" order="3" weight="0.4" />
+      <window_info active="true" anchor="bottom" id="Run" order="2" visible="true" weight="0.19804618" />
+      <window_info anchor="bottom" id="Debug" order="3" weight="0.36412078" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
       <window_info anchor="bottom" id="Inspection" order="5" weight="0.4" />
       <window_info anchor="bottom" id="TODO" order="6" />
-      <window_info anchor="right" id="Palette" />
-      <window_info anchor="right" id="Theme Preview" />
-      <window_info anchor="right" id="Maven" />
-      <window_info anchor="right" id="Capture Analysis" />
-      <window_info anchor="right" id="Palette&#9;" />
-      <window_info anchor="right" id="Database" />
+      <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
+      <window_info anchor="bottom" id="Version Control" order="8" />
+      <window_info anchor="bottom" id="Database Changes" order="9" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.17770849" />
+      <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
+      <window_info anchor="bottom" id="Messages" order="12" weight="0.32969603" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
       <window_info anchor="right" content_ui="combo" id="Hierarchy" order="2" weight="0.25" />
+      <window_info anchor="right" id="Palette" order="3" />
+      <window_info anchor="right" id="Theme Preview" order="4" />
+      <window_info anchor="right" id="Maven" order="5" />
+      <window_info anchor="right" id="Capture Analysis" order="6" />
+      <window_info anchor="right" id="Palette&#9;" order="7" />
+      <window_info anchor="right" id="Database" order="8" />
     </layout>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
+  </component>
+  <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/src/depsolver/PackageListScored.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="561">
+          <caret line="51" column="112" lean-forward="true" selection-start-line="49" selection-start-column="4" selection-end-line="51" selection-end-column="112" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/depsolver/Package.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="578">
+          <caret line="55" selection-start-line="55" selection-end-line="55" />
+          <folding>
+            <element signature="imports" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/depsolver/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="217">
+          <caret line="246" column="58" selection-start-line="246" selection-start-column="58" selection-end-line="246" selection-end-column="58" />
+          <folding>
+            <element signature="e#752#798#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
   </component>
 </project>
